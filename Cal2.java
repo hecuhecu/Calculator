@@ -1,68 +1,54 @@
 package tyuukan;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.regex.Pattern;
 
 public class Cal2 {
-	public static String calc(String form) {
-		String[] token = form.split("");
+	public static String calc(String[] form) {
         Deque<String> stack = new ArrayDeque<>();
+        Pattern pattern = Pattern.compile("^([1-9]\\d*|0)(\\.\\d+)?$|^(-[1-9]\\d*|0)(\\.\\d+)?$"); //数値かどうかの確認
         double a = 0;
         double b = 0;
         double c = 0;
         String x;
         String y;
         String z;
+        boolean xIs; //上のpatternを用いて数値かどうかを確認する
+        boolean yIs;
                 
-        /*for (int i=0; i<token.length; i++) { //逆ポーランドに変換されているかの確認
-        	System.out.println(token[i]);
+       /* for (int i=0; i<form.length; i++) { //逆ポーランドに変換されているかの確認
+        	System.out.println(form[i]);
         }*/
         
-        for (int i = 0; i < token.length; i++) {
-            switch (token[i]) {
+        for (int i = 0; i < form.length; i++) {
+            switch (form[i]) {
             case "+":
-            	for (int k=0; k<token.length; k++) {
-                	System.out.println(stack);
-                }
             	x = stack.removeFirst();
             	y = stack.removeFirst();
-	            if (Character.isDigit(x.toCharArray()[0]) && Character.isDigit(y.toCharArray()[0])) {
+            	xIs = pattern.matcher(x).matches(); //数値だとtrue
+            	yIs = pattern.matcher(y).matches();
+	            if (xIs && yIs) { //両方数値だと計算
 	            	a = Double.parseDouble(x);
 		            b = Double.parseDouble(y);
 		            c = b + a;
 		            stack.addFirst(String.valueOf(c));
 	          	}
-	            else if ((x.contains("-") && Character.isDigit(y.toCharArray()[0])) || (Character.isDigit(x.toCharArray()[0]) && y.contains("-"))) {
-	            	a = Double.parseDouble(x);
-	            	b = Double.parseDouble(y);
-	            	c = b + a;
-	            	stack.addFirst(String.valueOf(c));
-	            }
-	            /*else if (x.contains("-") && !Character.isDigit(y.toCharArray()[0])) {
-	            	a = Double.parseDouble(x);
-	            	b = Double.parseDouble(y);
-	            	c = b + a;
-	            	stack.addFirst(String.valueOf(c));
-	            }*/
 	           	else {
-	           		z = y + "+" + x;
+	           		z = y + "+" + x; //文字が含まれるときは計算せずにそのまま
 	           		stack.addFirst(z);
 	           	}
                 break;
             case "-":
             	x = stack.removeFirst();
             	y = stack.removeFirst();
-	            if (Character.isDigit(x.toCharArray()[0]) && Character.isDigit(y.toCharArray()[0])) {
+            	xIs = pattern.matcher(x).matches();
+            	yIs = pattern.matcher(y).matches();
+	            if (xIs && yIs) {
 	            	a = Double.parseDouble(x);
 		            b = Double.parseDouble(y);
 		            c = b - a;
 		            stack.addFirst(String.valueOf(c));
-	          	}
-	            else if (x.contains("-") || y.contains("-")) {
-	            	a = Double.parseDouble(x);
-	            	b = Double.parseDouble(y);
-	            	c = b - a;
-	            	stack.addFirst(String.valueOf(c));
-	            }
+	          	}	      
 	           	else {
 	           		z = y + "-" + x;
 	           		stack.addFirst(z);
@@ -71,23 +57,19 @@ public class Cal2 {
             case "*":
             	x = stack.removeFirst();
             	y = stack.removeFirst();
-	            if (Character.isDigit(x.toCharArray()[0]) && Character.isDigit(y.toCharArray()[0])) {
+            	xIs = pattern.matcher(x).matches();
+            	yIs = pattern.matcher(y).matches();
+	            if (xIs && yIs) {
 	            	a = Double.parseDouble(x);
 		            b = Double.parseDouble(y);
 		            c = b * a;
 		            stack.addFirst(String.valueOf(c));
 	          	}
-	            else if (x.contains("-") || y.contains("-")) {
-	            	a = Double.parseDouble(x);
-	            	b = Double.parseDouble(y);
-	            	c = b * a;
-	            	stack.addFirst(String.valueOf(c));
-	            }
-	            else if (Character.isDigit(x.toCharArray()[0]) && !Character.isDigit(y.toCharArray()[0])) {
+	            else if (xIs && !yIs) { // x:2 y:a -> 2a
 	            	z = x + y;
 		           	stack.addFirst(z);
 	            }
-	           	else {
+	           	else {                  // x:a y:2 -> 2a
 	           		z = y + x;
 		          	stack.addFirst(z);
 	           	}
@@ -95,32 +77,25 @@ public class Cal2 {
             case "/":
             	x = stack.removeFirst();
             	y = stack.removeFirst();
-	            if (Character.isDigit(x.toCharArray()[0]) && Character.isDigit(y.toCharArray()[0])) {
+            	xIs = pattern.matcher(x).matches();
+            	yIs = pattern.matcher(y).matches();
+	            if (xIs && yIs) {
 	            	a = Double.parseDouble(x);
 		            b = Double.parseDouble(y);
 		            c = b / a;
 		            stack.addFirst(String.valueOf(c));
 	          	}
-	            else if (x.contains("-") || y.contains("-")) {
-	            	a = Double.parseDouble(x);
-	            	b = Double.parseDouble(y);
-	            	c = b / a;
-	            	stack.addFirst(String.valueOf(c));
-	            }
 	           	else {
 	           		z = y + "/" + x;
 	           		stack.addFirst(z);
 	           	}
                 break;
-            case "(":
-            	stack.addFirst(token[i+1]+token[i+2]);
-            	i+=3;
-                break;
             default:
-            	stack.addFirst((token[i]));
+            	stack.addFirst((form[i]));
             }
         }
         
         return stack.removeFirst();
 	}
 }
+
