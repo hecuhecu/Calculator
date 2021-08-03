@@ -20,6 +20,11 @@ public class GetForm2 {
 			else if (formula[i].equals(")")) {
 				count2++;
 			}
+			
+			if (count1<count2) {
+				System.out.println("error:括弧に問題があります・");
+				return error;
+			}
 		}
 		if (count1 != count2) {
 			System.out.println("error:括弧の数が合っていません。");
