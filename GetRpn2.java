@@ -58,13 +58,14 @@ public class GetRpn2 {
         	else {
         		String st = formula[i];
         		for (int j=i+1; j<formula.length; j++) {
-        			if (!formula[j].equals("+") && !formula[j].equals("-") && !formula[j].equals("*") && !formula[j].equals("/")) {
+        			if (!formula[j].equals("+") && !formula[j].equals("-") && !formula[j].equals("*") && !formula[j].equals("/") && !formula[j].equals("(") && !formula[j].equals(")")) {
         				st += formula[j];
         			}
         			else {
         				break;
         			}
         		}
+        		
         		form[formIndex] = st;
 				formIndex++;
         	}

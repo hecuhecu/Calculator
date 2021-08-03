@@ -15,11 +15,10 @@ public class Cal2 {
         String z;
         boolean xIs; //上のpatternを用いて数値かどうかを確認する
         boolean yIs;
-                
-       /* for (int i=0; i<form.length; i++) { //逆ポーランドに変換されているかの確認
-        	System.out.println(form[i]);
-        }*/
         
+        for (int i=0; i<form.length; i++) { //逆ポーランドに変換されているかの確認
+        	System.out.println(form[i]);
+        }
         for (int i = 0; i < form.length; i++) {
             switch (form[i]) {
             case "+":
@@ -34,7 +33,13 @@ public class Cal2 {
 		            stack.addFirst(String.valueOf(c));
 	          	}
 	           	else {
-	           		z = y + "+" + x; //文字が含まれるときは計算せずにそのまま
+	           		if (x.matches("-[a-z]{1}")) {
+	           			x = "(" + x + ")";
+	           		}
+	           		else if (y.matches("-[a-z]{1}")) {
+	           			y = "(" + y + ")";
+	           		}
+	           		z = "(" + y + "+" + x + ")"; //文字が含まれるときは計算せずにそのまま
 	           		stack.addFirst(z);
 	           	}
                 break;
@@ -50,7 +55,13 @@ public class Cal2 {
 		            stack.addFirst(String.valueOf(c));
 	          	}	      
 	           	else {
-	           		z = y + "-" + x;
+	           		if (x.matches("-[a-z]{1}")) {
+	           			x = "(" + x + ")";
+	           		}
+	           		else if (y.matches("-[a-z]{1}")) {
+	           			y = "(" + y + ")";
+	           		}
+	           		z = "(" + y + "-" + x + ")";
 	           		stack.addFirst(z);
 	           	}      
                 break;
@@ -66,10 +77,22 @@ public class Cal2 {
 		            stack.addFirst(String.valueOf(c));
 	          	}
 	            else if (xIs && !yIs) { // x:2 y:a -> 2a
+	            	if (x.matches("-[a-z]{1}")) {
+	           			x = "(" + x + ")";
+	           		}
+	           		else if (y.matches("-[a-z]{1}")) {
+	           			y = "(" + y + ")";
+	           		}
 	            	z = x + y;
 		           	stack.addFirst(z);
 	            }
 	           	else {                  // x:a y:2 -> 2a
+	           		if (x.matches("-[a-z]{1}")) {
+	           			x = "(" + x + ")";
+	           		}
+	           		else if (y.matches("-[a-z]{1}")) {
+	           			y = "(" + y + ")";
+	           		}
 	           		z = y + x;
 		          	stack.addFirst(z);
 	           	}
@@ -86,6 +109,12 @@ public class Cal2 {
 		            stack.addFirst(String.valueOf(c));
 	          	}
 	           	else {
+	           		if (x.matches("-[a-z]{1}")) {
+	           			x = "(" + x + ")";
+	           		}
+	           		else if (y.matches("-[a-z]{1}")) {
+	           			y = "(" + y + ")";
+	           		}
 	           		z = y + "/" + x;
 	           		stack.addFirst(z);
 	           	}
