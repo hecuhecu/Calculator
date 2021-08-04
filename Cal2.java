@@ -105,6 +105,10 @@ public class Cal2 {
 	            if (xIs && yIs) {
 	            	a = Double.parseDouble(x);
 		            b = Double.parseDouble(y);
+		            if (a==0) {
+		            	System.out.println("error:0で割っています。");
+		            	return "error";
+					}
 		            c = b / a;
 		            stack.addFirst(String.valueOf(c));
 	          	}

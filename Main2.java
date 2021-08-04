@@ -9,6 +9,9 @@ public class Main2 {
 		form = GetRpn2.get(form);
 		
 		String result = Cal2.calc(form);
+		if (result.equals("error")) {
+			return;
+		}
 		System.out.println("計算結果は"+result+"です。");
 	}
 }

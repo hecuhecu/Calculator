@@ -20,7 +20,7 @@ public class GetRpn2 {
         			if (c.equals("*") || c.equals("/")) {
         				form[formIndex] = stack.removeFirst();
         				formIndex++;
-                    } 
+                    }
         			else {
         				break;
                     }
@@ -46,8 +46,20 @@ public class GetRpn2 {
         				workStack.addFirst(c);
         			}
         		}
+        		
         		while (!workStack.isEmpty()) {
-        			form[formIndex] = workStack.removeFirst();
+        			String check = workStack.removeFirst();
+        			while (!workStack.isEmpty()) {
+	        			String c = workStack.getFirst();
+	        			if (c.equals("*") || c.equals("/")) {
+	        				form[formIndex] = workStack.removeFirst();
+	        				formIndex++;
+	                    }
+	        			else {
+	        				break;
+	                    }
+        			}
+        			form[formIndex] = check;
     				formIndex++;
         		}
         	}
@@ -65,7 +77,6 @@ public class GetRpn2 {
         				break;
         			}
         		}
-        		
         		form[formIndex] = st;
 				formIndex++;
         	}

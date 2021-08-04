@@ -1,4 +1,6 @@
 package tyuukan;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class GetForm2 {
@@ -53,29 +55,38 @@ public class GetForm2 {
 		int count = 0; //式に文字(変数)が含まれていたらカウント
 		int[] parameterIndex = new int[formula.length]; 
 		String[] parameter = new String[formula.length];
+		Map<String, String> paraKeep = new HashMap<>();
 		for (int i=0; i<formula.length; i++) {
 			if (formula[i].matches("[a-z]")) {
 				parameterIndex[count] = i;
 				parameter[count] = formula[i];
+				paraKeep.put(parameter[count], null);
 				count++;
 			}
 			else if (formula[i].matches("-[a-z]")) {
 				char charPart = formula[i].charAt(1); //負の符号を抜き取った文字(変数)
 				parameterIndex[count] = i;
 				parameter[count] = String.valueOf(charPart);
+				paraKeep.put(parameter[count], null);
 				count++;
 			}
 		}
 		
 		String[] parameterValue = new String[count];
-		if (count>0) {
+		if (count>0) { //countが１以上ということは式に文字(変数)が含まれている
 			System.out.println("変数に値を代入して下さい(しない場合はEnter)");
-			for (int i=0; i<count; i++) {
-				System.out.print(parameter[i] + ":");
-				parameterValue[i] = scanner.nextLine();
+			for (int i=0; i<count; i++) { //一つの文字に一つの値しか代入出来ないようにする
+				if (paraKeep.get(parameter[i])==null) {
+					System.out.print(parameter[i] + ":");
+					parameterValue[i] = scanner.nextLine();
+					paraKeep.put(parameter[i], parameterValue[i]);
+				}
+				else {
+					parameterValue[i] = paraKeep.get(parameter[i]);
+				}
 			}
 			
-			for (int i=0; i<formula.length; i++) {
+			for (int i=0; i<formula.length; i++) { //負の文字(変数)には、符号付きの文字に代入するのではなく、符号を除いた文字だけに代入されるようにする
 				for (int j=0; j<count; j++) {
 					if (i==parameterIndex[j] && !parameterValue[j].equals("")) {
 						if (formula[i].matches("[a-z]")) {
