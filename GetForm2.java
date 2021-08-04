@@ -50,6 +50,45 @@ public class GetForm2 {
 			}
 		}
 		
+		int count = 0; //式に文字(変数)が含まれていたらカウント
+		int[] parameterIndex = new int[formula.length]; 
+		String[] parameter = new String[formula.length];
+		for (int i=0; i<formula.length; i++) {
+			if (formula[i].matches("[a-z]")) {
+				parameterIndex[count] = i;
+				parameter[count] = formula[i];
+				count++;
+			}
+			else if (formula[i].matches("-[a-z]")) {
+				char charPart = formula[i].charAt(1); //負の符号を抜き取った文字(変数)
+				parameterIndex[count] = i;
+				parameter[count] = String.valueOf(charPart);
+				count++;
+			}
+		}
+		
+		String[] parameterValue = new String[count];
+		if (count>0) {
+			System.out.println("変数に値を代入して下さい(しない場合はEnter)");
+			for (int i=0; i<count; i++) {
+				System.out.print(parameter[i] + ":");
+				parameterValue[i] = scanner.nextLine();
+			}
+			
+			for (int i=0; i<formula.length; i++) {
+				for (int j=0; j<count; j++) {
+					if (i==parameterIndex[j] && !parameterValue[j].equals("")) {
+						if (formula[i].matches("[a-z]")) {
+							formula[i] = parameterValue[j];
+						}
+						else if (formula[i].matches("-[a-z]")) {
+							formula[i] = "-" + parameterValue[j];
+						}
+					}
+				}
+			}
+		}
+		
 		return formula;
 	}
 
