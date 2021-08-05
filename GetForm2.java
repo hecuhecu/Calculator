@@ -13,22 +13,22 @@ public class GetForm2 {
 		String[] formula = form.split(" ");
 		String[] error = {"error"};
 		
-		int count1 = 0;
-		int count2 = 0;
+		int openBrackets = 0;
+		int closeBrackets = 0;
 		for (int i=0; i<formula.length; i++) { //括弧の過不足
 			if (formula[i].equals("(")) {
-				count1++;
+				openBrackets++;
 			}
 			else if (formula[i].equals(")")) {
-				count2++;
+				closeBrackets++;
 			}
 			
-			if (count1<count2) {
+			if (openBrackets<closeBrackets) {
 				System.out.println("error:括弧に問題があります・");
 				return error;
 			}
 		}
-		if (count1 != count2) {
+		if (openBrackets != closeBrackets) {
 			System.out.println("error:括弧の数が合っていません。");
 			return error;
 		}
@@ -52,48 +52,48 @@ public class GetForm2 {
 			}
 		}
 		
-		int count = 0; //式に文字(変数)が含まれていたらカウント
-		int[] parameterIndex = new int[formula.length]; 
-		String[] parameter = new String[formula.length];
-		Map<String, String> paraKeep = new HashMap<>();
+		String[] var = new String[formula.length]; //式における文字(変数)を保持
+		int[] varIndex = new int[formula.length]; //式における文字(変数)の位置を保持
+		int varCount = 0; //式に文字(変数)が含まれていたらカウント
+		Map<String, String> substitute = new HashMap<>(); //文字(変数)とそれに代入する値を保持
 		for (int i=0; i<formula.length; i++) {
 			if (formula[i].matches("[a-z]")) {
-				parameterIndex[count] = i;
-				parameter[count] = formula[i];
-				paraKeep.put(parameter[count], null);
-				count++;
+				varIndex[varCount] = i;
+				var[varCount] = formula[i];
+				substitute.put(var[varCount], null);
+				varCount++;
 			}
 			else if (formula[i].matches("-[a-z]")) {
 				char charPart = formula[i].charAt(1); //負の符号を抜き取った文字(変数)
-				parameterIndex[count] = i;
-				parameter[count] = String.valueOf(charPart);
-				paraKeep.put(parameter[count], null);
-				count++;
+				varIndex[varCount] = i;
+				var[varCount] = String.valueOf(charPart);
+				substitute.put(var[varCount], null);
+				varCount++;
 			}
 		}
 		
-		String[] parameterValue = new String[count];
-		if (count>0) { //countが１以上ということは式に文字(変数)が含まれている
+		String[] varValue = new String[varCount];
+		if (varCount>0) { //countが１以上ということは式に文字(変数)が含まれている
 			System.out.println("変数に値を代入して下さい(しない場合はEnter)");
-			for (int i=0; i<count; i++) { //一つの文字に一つの値しか代入出来ないようにする
-				if (paraKeep.get(parameter[i])==null) {
-					System.out.print(parameter[i] + ":");
-					parameterValue[i] = scanner.nextLine();
-					paraKeep.put(parameter[i], parameterValue[i]);
+			for (int i=0; i<varCount; i++) { //一つの文字に一つの値しか代入出来ないようにする
+				if (substitute.get(var[i])==null) {
+					System.out.print(var[i] + ":");
+					varValue[i] = scanner.nextLine();
+					substitute.put(var[i], varValue[i]);
 				}
 				else {
-					parameterValue[i] = paraKeep.get(parameter[i]);
+					varValue[i] = substitute.get(var[i]);
 				}
 			}
 			
 			for (int i=0; i<formula.length; i++) { //負の文字(変数)には、符号付きの文字に代入するのではなく、符号を除いた文字だけに代入されるようにする
-				for (int j=0; j<count; j++) {
-					if (i==parameterIndex[j] && !parameterValue[j].equals("")) {
+				for (int j=0; j<varCount; j++) {
+					if (i==varIndex[j] && !varValue[j].equals("")) {
 						if (formula[i].matches("[a-z]")) {
-							formula[i] = parameterValue[j];
+							formula[i] = varValue[j];
 						}
 						else if (formula[i].matches("-[a-z]")) {
-							formula[i] = "-" + parameterValue[j];
+							formula[i] = "-" + varValue[j];
 						}
 					}
 				}
