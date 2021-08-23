@@ -25,11 +25,13 @@ public class GetForm2 {
 			
 			if (openBrackets<closeBrackets) {
 				System.out.println("error:括弧に問題があります・");
+				scanner.close();
 				return error;
 			}
 		}
 		if (openBrackets != closeBrackets) {
 			System.out.println("error:括弧の数が合っていません。");
+			scanner.close();
 			return error;
 		}
 		
@@ -39,6 +41,7 @@ public class GetForm2 {
 				for (int k=0; k<ope.length; k++) {
 					if (formula[i-1].equals(ope[j]) && formula[i].equals(ope[k])) {
 						System.out.println("error:演算子が連続して入力されています。");
+						scanner.close();
 						return error;
 					}
 				}
@@ -48,6 +51,7 @@ public class GetForm2 {
 		for (int i=1; i<formula.length; i++) { //0で割っている時
 			if (formula[i-1].equals("/") && formula[i].equals("0")) {
 				System.out.println("error:0で割っています。");
+				scanner.close();
 				return error;
 			}
 		}
@@ -99,6 +103,8 @@ public class GetForm2 {
 				}
 			}
 		}
+		
+		scanner.close();
 		
 		return formula;
 	}
